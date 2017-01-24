@@ -600,15 +600,15 @@ class OAuth2RequestValidator(RequestValidator):
 
         .. _`Section 2.3.1`: https://tools.ietf.org/html/rfc6749#section-2.3.1
         """
-        if request.client_id is not None:
-            return request.client_id, request.client_secret
-
         auth = request.headers.get('Authorization')
         # If Werkzeug successfully parsed the Authorization header,
         # `extract_params` helper will replace the header with a parsed dict,
         # otherwise, there is nothing useful in the header and we just skip it.
-        if isinstance(auth, dict):
+        if auth and isinstance(auth, dict):
             return auth['username'], auth['password']
+
+        elif request.client_id is not None:
+            return request.client_id, request.client_secret
 
         return None, None
 
